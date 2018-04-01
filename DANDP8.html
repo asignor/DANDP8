@@ -1,0 +1,104 @@
+
+<html>
+
+    <div>
+    	<h1 align="center" style="color:black;font-size:14px;font-family:verdana, boldface;">
+    	       Udacity Data Analyst Nanodegree - DANDP8
+        <h1/>
+    <div/>	
+	<div id="chartContainer">
+		  <h1 align="center" style="color:black;font-size:20px;font-family:verdana;">
+    	       Customer Support Cases
+          <h1/>
+		  <script src="http://d3js.org/d3.v4.min.js"></script>
+		  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.9.1/d3.min.js"></script>
+		  <script src="http://dimplejs.org/dist/dimple.v2.3.0.min.js"></script>
+		  <script type="text/javascript">
+		  	  //create an svg to hold the graphic elements
+			  var svg = dimple.newSvg("#chartContainer", 1000, 800);
+              //start to build data function, getting customer support csv file
+			  d3.csv("customer_support.csv", function (data) {
+				  //initialize a chart object	
+				  var myChart = new dimple.chart(svg, data);
+				  //position it
+				  myChart.setBounds(50, 80, 900, 600);
+				  //set colors so that unoffered shows in gray, bad in orange and good in turquoise
+				  myChart.defaultColors = [
+				      new dimple.color("#e67e22", "#d35400"), // orange
+			          new dimple.color("#1abc9c", "#16a085"), // turquoise
+			          new dimple.color("#95a5a6", "#7f8c8d"),  // gray
+			          
+			      ];
+			      //the x axis is an ordered variable, month created
+				  var x = myChart.addCategoryAxis("x", "month created");
+				  x.addOrderRule("created_at");
+				  //y axis is aggregated by count, not the default sum, so a var is needed
+				  var myVertical = myChart.addMeasureAxis("y", "cases count");
+				  myVertical.aggreagate = dimple.aggregateMethod.count
+				  myChart.addMeasureAxis("z", "average hours to resolution");
+				  //satisdaction series aggregates by average, not the default sum, so first we make a var
+				  var mySeries = myChart.addSeries("satisfaction", dimple.plot.bubble);
+				  //and then set the aggregate attribute on the mySeries object
+				  mySeries.aggregate = dimple.aggregateMethod.avg;
+				  
+	              //now we start to build the interactivity
+	              //first we add a legend to the chart object, position
+				  //var myLegend = myChart.addLegend(60, 50, 100, 400, "center");
+				  var myLegend = myChart.addLegend(90, 50, 330, 20, "left");
+				  //add an explanation of the funtionality
+				  svg.selectAll("title_text")
+				  .data(["Satisfaction: click to show or hide from chart"])
+				  .enter()
+				  .append("text")
+				  .attr("x", 90)
+				  .attr("y", 30)
+				  .style("font-family", "sans-serif")
+				  .style("font-size", "12px")
+				  .style("color", "Gray")
+				  .text(function (d) { return d; });
+				  myChart.draw();
+	              //we "empty" the legend of elements, because we will "fill" it according to a dynamic filter
+				  myChart.legends = [];
+
+				  //now, we feed to a variable a list of the values we want to toggle on and off the chart
+				  //in this case, I know I want to use the satisfaction values, and I only have three, 
+				  //so they can be hard-coded 
+				  var filterValues = ["good","bad","unoffered"];
+
+				  //the graphic elements in our legend are rectangles, id'd "rect"
+				  //let's select them and append the on-click events
+				  myLegend.shapes.selectAll("rect")
+				  .on("click", function (e) {
+					//since I know I'll start with all visible, let's set a variable that indicates that to false
+					var hidden = false;
+					//same consideration for the filter, for now I filter nothing, so:
+					var newFilters = [];
+					//Now, if a rectangle was clecked, we push the value to newFilter
+					filterValues.forEach(function (f) {
+					  if (f === e.aggField.slice(-1)[0]) {
+						hidden = true;
+					  } else {
+						newFilters.push(f);
+					  }
+					});
+					if (hidden) {
+					  d3.select(this).style("opacity", 0.2);
+					} else {
+					  newFilters.push(e.aggField.slice(-1)[0]);
+					  d3.select(this).style("opacity", 0.8);
+					}
+					//once we have a complete list of valus to filter out, assign them to the main filter variable
+					filterValues = newFilters;
+					//then we use the filter variable to to dimple-filter the chart
+					myChart.data = dimple.filterData(data, "satisfaction", filterValues);
+					//we re-draw the the chart after the click event
+					//setting it to 2000ms (2 seconds) allows for the animation to show
+					myChart.draw(2000);
+				   });
+				        //on-click    
+			    });
+				//data 
+		  </script>
+	</div>
+</html>
+
