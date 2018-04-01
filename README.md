@@ -8,12 +8,17 @@ As a data analyst in a service and data-driven environment, I often receive requ
 
 Managers, executives, and agents on the field sense a customer's dissatisfaction and the need arises to understand why. What often happens following this is a request to see a lot more information than what can fit in a chart that makes sense: how many cases, how long they were open, how long it took to respond, are they satisfied, level of dificulty and effort. The problem is all these quantitities and attributes are not independent from one another, and many of them do not have an operation definition with which the entire audience is in accordance. To make matters more complicated, a case spans a period of time, rather then be associated with one date or time. This makes the question "how many cases this month?" a lot more complex than it looks at face value.
 
+
 In this sample visualization, I showcase one of the charts I have developed in answer to the challenge above. The goal for this visualization is to show a measure of how many cases are open in a time period and how long they were open, both. So there is insight into how many issues a customer is experiencing, as well as how long they had to wait for a resolution. A third piece of information is introduced in the form of a dynamic series, which is interactive: the data consumer can toggle three different satisfaction categories in and out of the chart.
+
+In searching for compelling and effective visualization to solve this need, I played with several complicated ideas, trying to render as much information as possible in one place. This turned out to be a mistake. Specially all the time animations that would play a case load though time, although they seem "cool" they are not palatable for managers and executives, and very hard to interpret. (See sketches.) All the charts that end up being used and leveraged for data-driven decisions are rather simple, as is the one sampled here.
 
 To see the visualization, serve up DANDP8.html to a browser and have customer_support.csv in the same folder. All the styling and scripts are in the html file.
 
 Customer_support.csv is sample customer support data and the organization will remain anonymous.
 
 References:
+
 http://dimplejs.org/
+
 https://stackoverflow.com/questions/30090642/customizing-colors-on-dimple-js-charts/30103957#30103957
